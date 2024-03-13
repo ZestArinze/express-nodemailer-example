@@ -11,8 +11,12 @@ app.use(helmet({
 const whitelist = process.env.FRONTEND_APP_URLS.split(',');
 const corsOptions = {
 	origin: function (origin, callback) {
+		if (!origin) { // TODO: clients suach as postman req with no origin
+			return callback(null, true);
+		}
+
 		if (whitelist.indexOf(origin) !== -1) {
-			callback(null, true)
+			callback(null, true);
 		} else {
 			callback(new Error('Not allowed by CORS'))
 		}
@@ -30,8 +34,14 @@ app.get('/', (_, res) => {
 app.post('/send-email', (req, res) => {
 	const { name, email, subject, message } = req.body;
 
-	if(!email || !email.trim() || !name || !name.trim()) {
-		return res.status(400).json({ message: 'Email and name are required' });
+	// basic validation
+	if (
+		!email || !email.trim() ||
+		!name || !name.trim() ||
+		!subject || !subject.trim() ||
+		!message || !message.trim()
+	) {
+		return res.status(400).json({ message: 'name, email, subject and message are required' });
 	}
 
 	const receipients = ` ${name} <${email}>`;
@@ -39,7 +49,7 @@ app.post('/send-email', (req, res) => {
 	res.json({ message: 'Sending email in a moment...' });
 
 	sendEmail({ receipients, subject, message })
-		.then(result => {})
+		.then(result => { })
 		.catch(error => {
 			// console.log(`Unable to send email to ${JSON.stringify({ receipients })}: ${JSON.stringify(error)}`)
 		});
