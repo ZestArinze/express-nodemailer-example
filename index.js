@@ -35,6 +35,7 @@ app.post('/send-email', (req, res) => {
 	const { name, email } = req.body;
 
 	const receipients = ` ${name} <${email}>`;
+
 	const subject = `Welcome to our website`;
 	const message = `Lorem ipsum dolor sit amet consectetur adipisicing elit. Minus mollitia nam, quo exercitationem cumque dolor molestias quis ipsam voluptatum sunt obcaecati explicabo eveniet quaerat corrupti similique optio, ratione ad at!`
 
@@ -42,7 +43,7 @@ app.post('/send-email', (req, res) => {
 
 	sendEmail({ receipients, subject, message })
 		.then(result => {})
-		.catch(error => console.log(`Unable to send email to ${JSON.stringify({ receipients })}`));
+		.catch(error => console.log(`Unable to send email to ${JSON.stringify({ receipients })}: ${JSON.stringify(error)}`));
 });
 
 module.exports = app;
