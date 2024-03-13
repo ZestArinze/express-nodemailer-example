@@ -34,6 +34,10 @@ app.get('/', (_, res) => {
 app.post('/send-email', (req, res) => {
 	const { name, email } = req.body;
 
+	if(!email || !email.trim() || !name || !name.trim()) {
+		return res.status(400).json({ message: 'Email and name are required' });
+	}
+
 	const receipients = ` ${name} <${email}>`;
 
 	const subject = `Welcome to our website`;
